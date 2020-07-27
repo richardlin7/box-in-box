@@ -47,16 +47,7 @@ class App extends React.Component {
     if (this.state.child !== 0) {
       this.setState({ child: this.state.child - 1 });
     }
-    return;
   };
-}
-
-function _makeBox(value, height, width) {
-  for (var i = 0; i < value; i++) {
-    console.log("making box");
-    return <Box child={value} height={height} width={width} />;
-  }
-  return;
 }
 
 export default App;
@@ -67,6 +58,7 @@ class Box extends React.Component {
       <div>
         <div
           onClick={this._onClick}
+          onContextMenu={this._onContextMenu}
           style={{
             position: "absolute",
             left: "50%",
@@ -77,16 +69,32 @@ class Box extends React.Component {
             border: "1px solid black",
           }}
         />
+        {_makeBox(this.state.child, this.height, this.width)}
       </div>
     );
   }
   constructor() {
     super();
-    this.state = { child: "" };
-    this._onClick = this._onClick.bind(this);
+    this.state = { child: 0 };
   }
-  _onClick() {
-    console.log("clicked");
-    this.setState({ child: "" });
+  _onClick = (e) => {
+    e.preventDefault();
+    // console.log("clicked");
+    this.setState({ child: this.state.child + 1 });
+  };
+
+  _onContextMenu = (e) => {
+    e.preventDefault();
+    if (this.state.child !== 0) {
+      this.setState({ child: this.state.child - 1 });
+    }
+  };
+}
+
+function _makeBox(value, height, width) {
+  for (var i = 0; i < value; i++) {
+    console.log("making box");
+    return <Box child={value} height={height} width={width} />;
   }
+  return;
 }
