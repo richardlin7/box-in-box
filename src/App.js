@@ -1,53 +1,66 @@
-// Logic Process: clicked a box in parent =>
-// sent to onClick method =>
-// calls something that creates a new class with a box =>
-//(SHARES SIMILAR CODE AS PARENT AND REDUCED SIZE)
+// get .map to work: works
+// add to child list when clicked: works
 
-//IE: root pass state down to child => child pass their state to their child etc.
-
-//create a method that will render box however many times its clicked
 import React from "react";
 
 class App extends React.Component {
   render() {
     return (
-      <div>
-        <div
-          onClick={this._onClick}
-          onContextMenu={this._onContextMenu}
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            height: this.height,
-            width: this.width,
-            border: "1px solid black",
-          }}
-        />
-        {_makeBox(this.state.child, this.height, this.width)}
+      <div
+        style={{
+          height: 700,
+          width: 1400,
+          border: "1px solid black",
+        }}
+        onClick={this._onClick}
+        onContextMenu={this._onContextMenu}
+      >
+        {this.state.child.map(this._makeBox)}
       </div>
     );
   }
+
   constructor() {
     super();
-    this.height = 700;
-    this.width = 1200;
-    this.state = { child: 0 };
+    this.state = { index: 0, child: [] };
+    this._makeBox = this._makeBox.bind(this);
+    this._onClick = this._onClick.bind(this);
+    this._onContextMenu = this._onContextMenu.bind(this);
   }
 
-  _onClick = (e) => {
-    e.preventDefault();
-    // console.log("clicked");
-    this.setState({ child: this.state.child + 1 });
-  };
+  _onClick() {
+    this.setState({
+      child: this.state.child.concat(""),
+      index: this.state.index + 1,
+    });
+    console.log("box made");
+  }
 
-  _onContextMenu = (e) => {
-    e.preventDefault();
-    if (this.state.child !== 0) {
-      this.setState({ child: this.state.child - 1 });
+  _onContextMenu(index) {
+    if (this.state.index !== 0) {
+      const child = this.state.child;
+
+      child.splice(index, 1);
+      this.setState({
+        child,
+        index: this.state.index - 1,
+      });
+      console.log("box removed");
     }
-  };
+  }
+
+  _makeBox(_, index) {
+    for (var i = 0; i <= index; i++) {
+      return (
+        <Box
+          key={index}
+          onClick={() => this._onClick(index)}
+          onContextMenu={() => this._onContextMenu(index)}
+        />
+      );
+    }
+    return;
+  }
 }
 
 export default App;
@@ -57,44 +70,20 @@ class Box extends React.Component {
     return (
       <div>
         <div
-          onClick={this._onClick}
-          onContextMenu={this._onContextMenu}
+          // onClick={this.props.onClick}
+          // onContextMenu={this.props.onContextMenu}
           style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            height: this.props.height * 0.7,
-            width: this.props.width * 0.7,
+            width: "70%",
+            height: "70vh", // render at 70 percent smaller height
+            margin: "1%",
             border: "1px solid black",
           }}
         />
-        {_makeBox(this.state.child, this.height, this.width)}
       </div>
     );
   }
   constructor() {
     super();
-    this.state = { child: 0 };
+    this.state = { index: 0, child: [] };
   }
-  _onClick = (e) => {
-    e.preventDefault();
-    // console.log("clicked");
-    this.setState({ child: this.state.child + 1 });
-  };
-
-  _onContextMenu = (e) => {
-    e.preventDefault();
-    if (this.state.child !== 0) {
-      this.setState({ child: this.state.child - 1 });
-    }
-  };
-}
-
-function _makeBox(value, height, width) {
-  for (var i = 0; i < value; i++) {
-    console.log("making box");
-    return <Box child={value} height={height} width={width} />;
-  }
-  return;
 }
