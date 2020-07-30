@@ -3,7 +3,7 @@
 
 // create recursion for makeBox method
 
-//current issue: box does not generate in child component
+//current issue:
 import React from "react";
 
 class App extends React.Component {
@@ -59,21 +59,22 @@ class Box extends React.Component {
     this._onContextMenu = this._onContextMenu.bind(this);
   }
 
-  _onClick() {
+  _onClick(e) {
+    e.stopPropagation();
     this.setState({
-      child: this.state.child.concat(Box),
+      child: this.state.child.concat(""),
       index: this.state.index + 1,
     });
     console.log("box made");
   }
 
-  _onContextMenu(index) {
+  _onContextMenu(e) {
     if (this.state.index !== 0) {
       const child = this.state.child;
-
-      child.splice(index, 1);
+      var nChild = child.slice(0, -1);
+      e.stopPropagation();
       this.setState({
-        child,
+        child: nChild,
         index: this.state.index - 1,
       });
       console.log("box removed");
